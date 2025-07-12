@@ -1,3 +1,4 @@
+from datetime import date
 from rest_framework import serializers
 from .models import Customer, Invoice, InvoiceItem # Assuming these models exist in .models
 
@@ -41,7 +42,15 @@ class InvoiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Invoice
+        # 'fields' defines the fields that will be included in serialized output (e.g., GET requests)
+        # and can be provided during creation (POST requests).
         fields = ['id', 'customer', 'issue_date', 'due_date', 'status', 'items', 'total_amount']
+        # 'read_only_fields' are always included in serialized output but cannot be provided on input.
+        # For update operations (PUT/PATCH), fields not in 'read_only_fields' are typically expected.
+        # However, the custom 'update' method in this serializer explicitly limits updates
+        # to only the 'status' field. This means other fields (customer, due_date, items)
+        # are effectively not required and will not be processed if provided during an update,
+        # while still being required for initial creation (POST) and available for retrieval (GET).
         read_only_fields = ['id', 'issue_date', 'total_amount']
 
     def validate(self, data):
@@ -49,7 +58,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
         Custom validation for Invoice creation.
         Ensures due_date is not before issue_date and that at least one item is provided.
         """
-        issue_date = data.get('issue_date')
+        issue_date =  date.today()
         due_date = data.get('due_date')
 
         if issue_date and due_date and due_date < issue_date:
@@ -81,9 +90,3 @@ class InvoiceSerializer(serializers.ModelSerializer):
             return instance
         # If 'status' is not present in the validated data, raise a validation error.
         raise serializers.ValidationError({"status": "Only the status field can be updated."})
-
-
-class InvoiceStatusUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Invoice
-        fields = ['status']
