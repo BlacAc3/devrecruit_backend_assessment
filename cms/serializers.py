@@ -5,16 +5,34 @@ from .models import Customer, Invoice, InvoiceItem # Assuming these models exist
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
-        fields = ['id', 'name', 'email', 'address']
+        fields = ['id', 'name', 'email']
+        # Default ModelSerializer validation ensures 'name' and 'email' are provided
+        # and that 'email' is a valid format and unique, as per the model definition.
 
 
 class InvoiceItemSerializer(serializers.ModelSerializer):
-    amount = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True, source='total')
 
     class Meta:
         model = InvoiceItem
         fields = ['id', 'description', 'quantity', 'unit_price', 'amount']
         read_only_fields = ['id', 'amount']
+
+    def validate_quantity(self, value):
+        """
+        Check that the quantity is a positive integer.
+        """
+        if value <= 0:
+            raise serializers.ValidationError("Quantity must be a positive integer.")
+        return value
+
+    def validate_unit_price(self, value):
+        """
+        Check that the unit price is a positive decimal.
+        """
+        if value <= 0:
+            raise serializers.ValidationError("Unit price must be a positive decimal.")
+        return value
 
 
 class InvoiceSerializer(serializers.ModelSerializer):
@@ -23,23 +41,49 @@ class InvoiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Invoice
-        fields = ['id', 'customer', 'invoice_number', 'issue_date', 'due_date', 'status', 'items', 'total_amount']
+        fields = ['id', 'customer', 'issue_date', 'due_date', 'status', 'items', 'total_amount']
         read_only_fields = ['id', 'issue_date', 'total_amount']
+
+    def validate(self, data):
+        """
+        Custom validation for Invoice creation.
+        Ensures due_date is not before issue_date and that at least one item is provided.
+        """
+        issue_date = data.get('issue_date')
+        due_date = data.get('due_date')
+
+        if issue_date and due_date and due_date < issue_date:
+            raise serializers.ValidationError({"due_date": "Due date cannot be before issue date."})
+
+        # This validation specifically for POST (create) requests for invoices.
+        # It ensures that an invoice is created with at least one item.
+        if self.context['request'].method == 'POST':
+            items_data = data.get('items')
+            if not items_data:
+                raise serializers.ValidationError({"items": "At least one invoice item is required."})
+
+        return data
 
     def create(self, validated_data):
         items_data = validated_data.pop('items')
         invoice = Invoice.objects.create(**validated_data)
         for item_data in items_data:
-            InvoiceLineItem.objects.create(invoice=invoice, **item_data)
+            InvoiceItem.objects.create(invoice=invoice, **item_data)
         return invoice
 
     def update(self, instance, validated_data):
-        # For PATCH /invoices/<id>/ – Update invoice status.
-        # We explicitly pop 'items' to prevent attempts to update nested items
-        # when only scalar fields like 'status' are intended for modification.
-        items_data = validated_data.pop('items', None)
+        # This update method is designed to specifically handle updates to the 'status' field.
+        # It checks if 'status' is provided in the validated data.
+        if 'status' in validated_data:
+            # If 'status' is present, update the instance's status attribute.
+            instance.status = validated_data['status']
+            instance.save()
+            return instance
+        # If 'status' is not present in the validated data, raise a validation error.
+        raise serializers.ValidationError({"status": "Only the status field can be updated."})
 
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
-        return instance
+
+class InvoiceStatusUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Invoice
+        fields = ['status']
