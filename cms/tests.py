@@ -181,8 +181,7 @@ class InvoiceTests(APITestCase):
 
         # This test ensures that sending 'items' in an update request for the Invoice
         # does not result in item changes, but only scalar fields are updated.
-        response = self.client.put(detail_url, update_data, format='json')
-        print(response.json())
+        response = self.client.patch(detail_url, update_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         invoice.refresh_from_db()
         self.assertEqual(invoice.status, 'paid')
