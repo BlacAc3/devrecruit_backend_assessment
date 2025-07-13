@@ -36,6 +36,11 @@ class InvoiceItemSerializer(serializers.ModelSerializer):
         return value
 
 
+class InvoiceStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Invoice
+        fields = ['status']
+
 class InvoiceSerializer(serializers.ModelSerializer):
     items = InvoiceItemSerializer(many=True)
     total_amount = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)

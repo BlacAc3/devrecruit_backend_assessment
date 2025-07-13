@@ -54,6 +54,10 @@ This project is a RESTful API built with Django and Django REST Framework for ma
 
     The API will be available at `http://127.0.0.1:8000/api/`.
 
+    You can also access the API documentation interfaces:
+    *   **Swagger UI**: `http://127.0.0.1:8000/api/schema/swagger-ui/`
+    *   **Redoc**: `http://127.0.0.1:8000/api/schema/redoc/`
+
 ## Running Tests
 
 1.  Run the tests:

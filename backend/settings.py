@@ -40,7 +40,22 @@ INSTALLED_APPS = [
     # My apps
     "rest_framework",
     "cms",
+    "drf_spectacular",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'DevRecruit Assessment', # Title for your API documentation
+    'DESCRIPTION': 'A sample API for managing Customers and Invoices.', # Description of your API
+    'VERSION': '1.0.0', # Version of your API
+    'SERVE_INCLUDE_SCHEMA': False, # Whether to include the schema in the Swagger UI
+    'SERVERS': [
+        {'url': 'http://127.0.0.1:8000/api/', 'description': 'Local Development Server'},
+    ],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

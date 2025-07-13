@@ -1,8 +1,9 @@
 from django.shortcuts import render
 
-# Create your views here.
 from rest_framework import generics
-from .serializers import CustomerSerializer, InvoiceSerializer
+from drf_spectacular.utils import extend_schema
+
+from .serializers import CustomerSerializer, InvoiceSerializer, InvoiceStatusSerializer
 from .models import Customer, Invoice
 
 
@@ -16,6 +17,11 @@ class InvoiceListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = InvoiceSerializer
 
 
+
+@extend_schema(
+    request={'PATCH': InvoiceStatusSerializer}
+)
 class InvoiceRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
+    http_method_names = ['get', 'patch', 'head', 'options']
