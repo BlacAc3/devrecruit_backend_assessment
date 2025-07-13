@@ -112,27 +112,12 @@ The API provides the following endpoints:
         }
         ```
 
-## Project Structure
 
-*   `backend/`: The main Django project.
-    *   `settings.py`: Project settings.
-    *   `urls.py`: Project-level URL configuration.
-    *   `asgi.py` and `wsgi.py`: ASGI/WSGI configuration.
-*   `cms/`: Django app for managing customers and invoices.
-    *   `models.py`: Defines the data models.
-    *   `serializers.py`: Defines serializers for the API.
-    *   `views.py`: Defines the API views.
-    *   `urls.py`: App-level URL configuration.
-    *   `tests.py`: Contains API tests (currently with errors).
-    *   `admin.py`: Registers models for the Django admin interface.
-    *   `apps.py`: App configuration.
-    *   `migrations/`: Database migrations.
-*   `.gitignore`: Specifies intentionally untracked files that Git should ignore.
-*   `manage.py`: Django's command-line utility.
 
 ## Technologies Used
 
 *   Python
 *   Django
 *   Django REST Framework
+*   DRF Spectacular (For swagger documentation)
 *   SQLite (for development)
