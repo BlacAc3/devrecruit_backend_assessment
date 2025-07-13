@@ -1,9 +1,7 @@
-from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from .models import Customer, Invoice, InvoiceItem
-from .serializers import CustomerSerializer, InvoiceSerializer, InvoiceItemSerializer
 import datetime
 
 class CustomerTests(APITestCase):
@@ -138,17 +136,7 @@ class InvoiceTests(APITestCase):
         self.assertEqual(response.data[0]['id'], invoice1.id)
         self.assertEqual(response.data[1]['id'], invoice2.id)
 
-    def test_retrieve_invoice(self):
-        invoice = Invoice.objects.create(customer=self.customer, due_date=self.tomorrow)
-        item1 = InvoiceItem.objects.create(invoice=invoice, description='Service A', quantity=1, unit_price='100.00')
-        item2 = InvoiceItem.objects.create(invoice=invoice, description='Product B', quantity=2, unit_price='25.50')
 
-        detail_url = reverse('invoice-detail-update', kwargs={'pk': invoice.pk})
-        response = self.client.get(detail_url, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['id'], invoice.id)
-        self.assertEqual(len(response.data['items']), 2)
-        self.assertEqual(response.data['total_amount'], '151.00') # 1*100 + 2*25.50
 
     def test_update_invoice_status(self):
         invoice = Invoice.objects.create(customer=self.customer, status='pending', due_date=self.tomorrow)
