@@ -1,0 +1,176 @@
+{
+	"info": {
+		"_postman_id": "5836cbad-bac9-459c-93ee-db2a453ec80b",
+		"name": "Dev Recruit Assessment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33657074"
+	},
+	"item": [
+		{
+			"name": "Create Customer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Customer Name\",\n    \"email\": \"customer@example.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_ENDPOINT}}/api/customers/",
+					"host": [
+						"{{URL_ENDPOINT}}"
+					],
+					"path": [
+						"api",
+						"customers",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all customers",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Post an invoice",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"customer\": 1,  // Customer ID\n    \"due_date\": \"2026-08-12\",\n    \"status\": \"pending\",  // or \"paid\", \"overdue\"\n    \"items\": [\n        {\n            \"description\": \"Item description\",\n            \"quantity\": 1,\n            \"unit_price\": \"10.00\"\n        },\n        {\n            \"description\":\"A simple Item\",\n            \"quantity\": 2,\n            \"unit_price\":\"1000.00\"\n\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_ENDPOINT}}/api/invoices/",
+					"host": [
+						"{{URL_ENDPOINT}}"
+					],
+					"path": [
+						"api",
+						"invoices",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all invoices",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_ENDPOINT}}/api/invoices/",
+					"host": [
+						"{{URL_ENDPOINT}}"
+					],
+					"path": [
+						"api",
+						"invoices",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get 1 invoice",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_ENDPOINT}}/api/invoices/2/",
+					"host": [
+						"{{URL_ENDPOINT}}"
+					],
+					"path": [
+						"api",
+						"invoices",
+						"2",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch Invoice",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"status\":\"paid\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_ENDPOINT}}/api/invoices/2/",
+					"host": [
+						"{{URL_ENDPOINT}}"
+					],
+					"path": [
+						"api",
+						"invoices",
+						"2",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"value": "",
+			"type": "string",
+			"disabled": true
+		},
+		{
+			"key": "URL_ENDPOINT",
+			"value": "localhost:8000",
+			"type": "default"
+		}
+	]
+}
